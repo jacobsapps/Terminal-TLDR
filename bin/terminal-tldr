@@ -1,0 +1,77 @@
+#!/usr/bin/env python3
+"""Install or inspect the event-driven iTerm title decorator."""
+import argparse
+import json
+import os
+from pathlib import Path
+import plistlib
+import socket
+import subprocess
+import sys
+import tempfile
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / 'lib'))
+import titles
+
+LABEL = 'com.jacobbartlett.terminal-tldr-iterm'
+
+
+def install():
+    python = titles.APP_DIR / 'venv/bin/python'
+    if not python.exists():
+        subprocess.run([sys.executable, '-m', 'venv', str(python.parent.parent)], check=True)
+        subprocess.run([str(python), '-m', 'pip', 'install', 'iterm2'], check=True)
+    auto = Path.home() / 'Library/Application Support/iTerm2/Scripts/AutoLaunch'
+    for name in ('terminal_tldr_iterm.py', 'terminal_tldr_iterm.py.disabled'):
+        source = auto / name
+        if source.exists() or source.is_symlink():
+            archive = titles.APP_DIR / 'retired-autolaunch'
+            archive.mkdir(parents=True, exist_ok=True)
+            source.rename(Path(tempfile.mkdtemp(dir=archive)) / name)
+    plist_path = Path.home() / 'Library/LaunchAgents' / f'{LABEL}.plist'
+    plist_path.parent.mkdir(parents=True, exist_ok=True)
+    plist_path.write_bytes(plistlib.dumps({
+        'Label': LABEL,
+        'ProgramArguments': [str(python), str(ROOT / 'iterm2/terminal_tldr_iterm.py')],
+        'RunAtLoad': True, 'KeepAlive': {'SuccessfulExit': False}, 'ThrottleInterval': 10,
+        'EnvironmentVariables': {'PATH': '/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin',
+                                 'TERMINAL_TLDR_MODEL': titles.MODEL, 'TERMINAL_TLDR_REASONING': titles.REASONING},
+        'StandardOutPath': str(titles.APP_DIR / 'service.log'),
+        'StandardErrorPath': str(titles.APP_DIR / 'service.log'),
+        'WorkingDirectory': str(ROOT), 'Nice': 10,
+    }))
+    domain = f'gui/{os.getuid()}'
+    subprocess.run(['launchctl', 'bootout', domain, str(plist_path)], capture_output=True)
+    subprocess.run(['launchctl', 'enable', f'{domain}/{LABEL}'], check=True)
+    subprocess.run(['launchctl', 'bootstrap', domain, str(plist_path)], check=True)
+    print(f'Started {LABEL}; no terminal restart required.')
+
+
+def status():
+    with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as client:
+        client.settimeout(2)
+        try:
+            client.connect(str(titles.APP_DIR / 'status.sock'))
+            print(json.dumps(json.loads(client.recv(8192)), indent=2))
+        except (OSError, ValueError):
+            print('Title updater is not connected.', file=sys.stderr)
+            return 1
+    return 0
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('action', choices=['install', 'status', 'hook'])
+    parser.add_argument('legacy_hook_args', nargs='*', help=argparse.SUPPRESS)
+    args = parser.parse_args()
+    if args.action == 'install':
+        install()
+    elif args.action == 'status':
+        return status()
+    # Old hook invocations are deliberately silent no-ops during migration.
+    return 0
+
+
+if __name__ == '__main__':
+    raise SystemExit(main())

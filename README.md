@@ -30,7 +30,7 @@ and generic profile names aren't treated as tasks. Notifications are coalesced, 
 unchanged titles cause no API writes. There is no repeating polling timer.
 
 A new readable name gets one ephemeral GPT-5.6-Luna/max request. Requests run
-serially, time out after 90 seconds, and are cached across restarts. Failures
+serially, time out after 10 seconds, and are cached across restarts. Failures
 back off for 5 then 10 minutes, with at most three attempts per name. Identical
 names share a cache entry. A native name change can produce a new title; ordinary
 agent activity cannot. Manual tab renames win until the foreground job changes.

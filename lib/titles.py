@@ -168,7 +168,7 @@ async def generate(name: str) -> dict:
             env={k: v for k, v in os.environ.items() if not k.startswith(('ITERM', 'TERM_SESSION', 'CODEX_THREAD', 'CODEX_SESSION'))})
         CHILDREN.add(proc.pid)
         try:
-            await asyncio.wait_for(proc.communicate(prompt.encode()), timeout=90)
+            await asyncio.wait_for(proc.communicate(prompt.encode()), timeout=10)
             result = read_json(output)
             if proc.returncode or not format_title(result):
                 raise RuntimeError(f'title request failed (exit {proc.returncode})')

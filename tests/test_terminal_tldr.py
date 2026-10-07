@@ -321,9 +321,12 @@ class GeneratorTests(unittest.IsolatedAsyncioTestCase):
             proc.wait = mock.AsyncMock(side_effect=wait)
             with mock.patch.object(titles, 'APP_DIR', Path(directory)), mock.patch.object(
                 titles.asyncio, 'create_subprocess_exec', new_callable=mock.AsyncMock, return_value=proc
-            ), mock.patch.object(titles.os, 'killpg') as kill:
+            ), mock.patch.object(titles.os, 'killpg') as kill, mock.patch.object(
+                titles.asyncio, 'wait_for', wraps=asyncio.wait_for
+            ) as deadline:
                 with self.assertRaises(asyncio.TimeoutError):
                     await titles.generate(NAME)
+            self.assertEqual(deadline.call_args.kwargs['timeout'], 10)
             kill.assert_called_once_with(proc.pid, titles.signal.SIGKILL)
             proc.wait.assert_awaited_once()
             self.assertNotIn(proc.pid, titles.CHILDREN)

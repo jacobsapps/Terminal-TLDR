@@ -20,9 +20,10 @@ import uuid
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'lib'))
 import titles
+import agent_titles
 import iterm2
 
-OUT = titles.APP_DIR / 'performance' / time.strftime('%Y-%m-%d') / 'v2/live-behavior.json'
+OUT = titles.APP_DIR / 'performance' / time.strftime('%Y-%m-%d') / 'v3/live-behavior.json'
 
 
 def status():
@@ -132,13 +133,42 @@ async def main(connection):
             result['realGeneratedTitle'] = actual
             result['afterRealGeneration'] = status()
             records.append('Uncached task: one real model request, valid result displayed in iTerm')
+            assert titles.read_json(live_path)['model'] == 'gpt-6-luna'
+            thread = 'fixture-' + token
+            def control(action, **extra):
+                return agent_titles.request(dict(action=action, terminal=session.session_id, thread=thread, **extra))
+            assert control('prompt', turn='0')['due']
+            agent_value = {'emojis': ['🧭', '🏷️', '✅'], 'title': 'Changed Agent Task'}
+            assert control('set', value=agent_value)['ok']
+            await eventually(lambda: tab.async_get_variable('titleOverride'), titles.format_title(agent_value), 'agent-written title')
+            await send(names[0] + ' | Working')
+            await asyncio.sleep(3)
+            assert await tab.async_get_variable('titleOverride') == titles.format_title(agent_value)
+            records.append('Agent-written task change displays without a model request and wins over native-name changes')
+            writes = status()['titleWrites']
+            assert control('review')['ok']
+            for n in range(1, 10):
+                assert not control('prompt', turn=str(n))['due']
+            assert control('prompt', turn='10')['due']
+            assert control('review')['ok']
+            await asyncio.sleep(2)
+            assert status()['titleWrites'] == writes
+            assert status()['modelCalls'] == before['modelCalls'] + 1
+            records.append('Tenth new user message triggers a review; unchanged review writes no title and calls no model')
+            subprocess.run(['launchctl', 'kickstart', '-k', f'gui/{os.getuid()}/com.jacobbartlett.terminal-tldr-iterm'], check=True)
+            await asyncio.sleep(6)
+            assert await tab.async_get_variable('titleOverride') == titles.format_title(agent_value)
+            assert status()['modelCalls'] == 0
+            assert not control('prompt', turn='11')['due']
+            records.append('Agent title and review cadence survive a helper restart')
             await tab.async_set_title('Manual Fixture Title')
             await asyncio.sleep(2)
             await send(names[0] + ' | Ready')
             await asyncio.sleep(3)
             assert await tab.async_get_variable('titleOverride') == 'Manual Fixture Title'
+            assert control('set', value=agent_value).get('manual')
             records.append('Manual rename survives subsequent native task changes')
-            assert status()['modelCalls'] == before['modelCalls'] + 1, 'Manual rename triggered additional generation'
+            assert status()['modelCalls'] == 0, 'Manual rename triggered additional generation'
             # Restart only the updater; verify the fixture and all original jobs persist.
             subprocess.run(['launchctl', 'kickstart', '-k', f'gui/{os.getuid()}/com.jacobbartlett.terminal-tldr-iterm'], check=True)
             await asyncio.sleep(6)

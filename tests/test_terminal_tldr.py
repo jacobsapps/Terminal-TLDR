@@ -14,6 +14,7 @@ from unittest import mock
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'lib'))
 import titles
+import agent_titles
 spec = importlib.util.spec_from_file_location('service', ROOT / 'iterm2/terminal_tldr_iterm.py')
 service = importlib.util.module_from_spec(spec)
 sys.modules['service'] = service
@@ -142,7 +143,8 @@ class ServiceTests(unittest.IsolatedAsyncioTestCase):
         self.tab = SimpleNamespace(tab_id='tab-1', all_sessions=[self.session], current_session=self.session,
                                    async_set_title=mock.AsyncMock(), async_set_variable=mock.AsyncMock())
         self.app = SimpleNamespace(windows=[SimpleNamespace(tabs=[self.tab])])
-        self.svc = service.Service(self.app, self.cache)
+        self.svc = service.Service(self.app, self.cache,
+                                  agent_titles.AgentTitles(Path(self.directory.name) / 'agents'))
         self.item = service.Session(values={'jobPid': 123, 'jobName': 'codex', 'commandLine': 'codex', 'autoName': NAME, 'profileName': 'Default'}, task=mock.Mock())
         self.state = service.Tab(initialized=True, task=mock.Mock())
         self.svc.sessions[self.session.session_id] = self.item
@@ -296,6 +298,9 @@ class GeneratorTests(unittest.IsolatedAsyncioTestCase):
                 self.assertIn('unified_exec', args)
                 self.assertIn('web_search="disabled"', args)
                 self.assertNotIn('TERM_SESSION_ID', kwargs['env'])
+                self.assertNotIn('OPENAI_API_KEY', kwargs['env'])
+                self.assertNotIn('CODEX_API_KEY', kwargs['env'])
+                self.assertEqual(args[args.index('--model') + 1], 'gpt-6-luna')
                 output = Path(args[args.index('--output-last-message') + 1])
                 async def communicate(prompt):
                     self.assertIn(NAME.encode(), prompt)
@@ -306,7 +311,8 @@ class GeneratorTests(unittest.IsolatedAsyncioTestCase):
                 return proc
             with mock.patch.object(titles, 'APP_DIR', Path(directory)), mock.patch.object(
                 titles.asyncio, 'create_subprocess_exec', side_effect=create
-            ), mock.patch.dict(titles.os.environ, {'TERM_SESSION_ID': 'interactive-terminal'}):
+            ), mock.patch.dict(titles.os.environ, {'TERM_SESSION_ID': 'interactive-terminal',
+                                                  'OPENAI_API_KEY': 'test-only', 'CODEX_API_KEY': 'test-only'}):
                 result = await titles.generate(NAME)
             self.assertEqual(titles.format_title(result), titles.format_title(TITLE))
             self.assertNotIn(proc.pid, titles.CHILDREN)

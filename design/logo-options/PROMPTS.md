@@ -1,0 +1,43 @@
+# Terminal TLDR logo exploration
+
+Ten original concepts made with the built-in image generator. None is installed yet.
+
+## 01 Tab Bookmark
+
+Use case: logo-brand. Create one polished original macOS app icon concept for Terminal TLDR, a small utility that gives terminal windows short meaningful titles. Concept 01: Tab Bookmark. A chunky golden-orange bookmark ribbon clipped over the top edge of a small charcoal terminal tab. An instantly readable, clever two-shape silhouette. No command prompt. Flat vector-like editorial brand mark, rich warm orange/amber/charcoal/cream, superb optical balance and legibility at 32 pixels. One centered icon, generous padding, subtle rounded-square cream backdrop, square image. No text, lettering, numbers, watermarks, gradients, gloss, photorealism or fake screenshot. Absolutely no OpenAI knot, Codex logo, generic >_ command prompt, purple app icon, or resemblance to existing AI brands. Render a single distinctive proposed icon, not a grid.
+
+## 02 Label Maker
+
+Use case: logo-brand. Create one polished original macOS app icon concept for Terminal TLDR, a small utility that gives terminal windows short meaningful titles. Concept 02: Label Maker. A coral-orange luggage-tag silhouette with a small circular hole and two short cream text strokes. A tiny dark terminal-tab notch makes it feel like a window label rather than shopping. Flat vector-like editorial brand mark, rich warm orange/amber/charcoal/cream, superb optical balance and legibility at 32 pixels. One centered icon, generous padding, subtle rounded-square cream backdrop, square image. No text, lettering, numbers, watermarks, gradients, gloss, photorealism or fake screenshot. Absolutely no OpenAI knot, Codex logo, generic >_ command prompt, purple app icon, or resemblance to existing AI brands. Render a single distinctive proposed icon, not a grid.
+
+## 03 Tab Stack
+
+Use case: logo-brand. Create one polished original macOS app icon concept for Terminal TLDR, a small utility that gives terminal windows short meaningful titles. Concept 03: Tab Stack. Three staggered terracotta, golden-yellow and cream window title bars forming a confident abstract T. Bold architectural geometry, no screen details. Flat vector-like editorial brand mark, rich warm orange/amber/charcoal/cream, superb optical balance and legibility at 32 pixels. One centered icon, generous padding, subtle rounded-square cream backdrop, square image. No text, lettering, numbers, watermarks, gradients, gloss, photorealism or fake screenshot. Absolutely no OpenAI knot, Codex logo, generic >_ command prompt, purple app icon, or resemblance to existing AI brands. Render a single distinctive proposed icon, not a grid.
+
+## 04 Short Story
+
+Use case: logo-brand. Create one polished original macOS app icon concept for Terminal TLDR, a small utility that gives terminal windows short meaningful titles. Concept 04: Short Story. An amber paper strip folding down into one compact charcoal line, a visual metaphor for a long conversation becoming a short title. Strong simple origami-like silhouette. Flat vector-like editorial brand mark, rich warm orange/amber/charcoal/cream, superb optical balance and legibility at 32 pixels. One centered icon, generous padding, subtle rounded-square cream backdrop, square image. No text, lettering, numbers, watermarks, gradients, gloss, photorealism or fake screenshot. Absolutely no OpenAI knot, Codex logo, generic >_ command prompt, purple app icon, or resemblance to existing AI brands. Render a single distinctive proposed icon, not a grid.
+
+## 05 Little Lighthouse
+
+Use case: logo-brand. Create one polished original macOS app icon concept for Terminal TLDR, a small utility that gives terminal windows short meaningful titles. Concept 05: Little Lighthouse. A very simple warm-orange lighthouse whose beam is a tiny labeled rectangular window tab. Friendly and confident, a metaphor for finding the right terminal. Flat vector-like editorial brand mark, rich warm orange/amber/charcoal/cream, superb optical balance and legibility at 32 pixels. One centered icon, generous padding, subtle rounded-square cream backdrop, square image. No text, lettering, numbers, watermarks, gradients, gloss, photorealism or fake screenshot. Absolutely no OpenAI knot, Codex logo, generic >_ command prompt, purple app icon, or resemblance to existing AI brands. Render a single distinctive proposed icon, not a grid.
+
+## 06 Name Badge
+
+Use case: logo-brand. Create one polished original macOS app icon concept for Terminal TLDR, a small utility that gives terminal windows short meaningful titles. Concept 06: Name Badge. A thick cream rounded name badge on an orange field, two dark short title strokes, with a playful offset orange tab on its top edge. Strong playful badge silhouette. Flat vector-like editorial brand mark, rich warm orange/amber/charcoal/cream, superb optical balance and legibility at 32 pixels. One centered icon, generous padding, subtle rounded-square cream backdrop, square image. No text, lettering, numbers, watermarks, gradients, gloss, photorealism or fake screenshot. Absolutely no OpenAI knot, Codex logo, generic >_ command prompt, purple app icon, or resemblance to existing AI brands. Render a single distinctive proposed icon, not a grid.
+
+## 07 Tab Bird
+
+Use case: logo-brand. Create one polished original macOS app icon concept for Terminal TLDR, a small utility that gives terminal windows short meaningful titles. Concept 07: Tab Bird. An abstract small amber bird perched on a charcoal window title bar. Its folded wing is shaped like a bookmark. Elegant, memorable, restrained and almost typographic. Flat vector-like editorial brand mark, rich warm orange/amber/charcoal/cream, superb optical balance and legibility at 32 pixels. One centered icon, generous padding, subtle rounded-square cream backdrop, square image. No text, lettering, numbers, watermarks, gradients, gloss, photorealism or fake screenshot. Absolutely no OpenAI knot, Codex logo, generic >_ command prompt, purple app icon, or resemblance to existing AI brands. Render a single distinctive proposed icon, not a grid.
+
+## 08 Folded T
+
+Use case: logo-brand. Create one polished original macOS app icon concept for Terminal TLDR, a small utility that gives terminal windows short meaningful titles. Concept 08: Folded T. A distinctive geometric capital T made from one folded amber ribbon, one darker fold for depth, crisp silhouette. The top of the T evokes a window tab. Flat vector-like editorial brand mark, rich warm orange/amber/charcoal/cream, superb optical balance and legibility at 32 pixels. One centered icon, generous padding, subtle rounded-square cream backdrop, square image. No text, lettering, numbers, watermarks, gradients, gloss, photorealism or fake screenshot. Absolutely no OpenAI knot, Codex logo, generic >_ command prompt, purple app icon, or resemblance to existing AI brands. Render a single distinctive proposed icon, not a grid.
+
+## 09 Signal Flag
+
+Use case: logo-brand. Create one polished original macOS app icon concept for Terminal TLDR, a small utility that gives terminal windows short meaningful titles. Concept 09: Signal Flag. An orange triangular pennant attached to a dark compact rounded terminal window corner. One cream horizontal title line. Nautical clarity without literal tech clichés. Flat vector-like editorial brand mark, rich warm orange/amber/charcoal/cream, superb optical balance and legibility at 32 pixels. One centered icon, generous padding, subtle rounded-square cream backdrop, square image. No text, lettering, numbers, watermarks, gradients, gloss, photorealism or fake screenshot. Absolutely no OpenAI knot, Codex logo, generic >_ command prompt, purple app icon, or resemblance to existing AI brands. Render a single distinctive proposed icon, not a grid.
+
+## 10 Window Wink
+
+Use case: logo-brand. Create one polished original macOS app icon concept for Terminal TLDR, a small utility that gives terminal windows short meaningful titles. Concept 10: Window Wink. A small warm-orange rounded terminal window with one cream title bar and a subtle single friendly winking eye implied by a short black curved stroke. Playful but sophisticated, no command prompt. Flat vector-like editorial brand mark, rich warm orange/amber/charcoal/cream, superb optical balance and legibility at 32 pixels. One centered icon, generous padding, subtle rounded-square cream backdrop, square image. No text, lettering, numbers, watermarks, gradients, gloss, photorealism or fake screenshot. Absolutely no OpenAI knot, Codex logo, generic >_ command prompt, purple app icon, or resemblance to existing AI brands. Render a single distinctive proposed icon, not a grid.

@@ -1,76 +1,113 @@
 #!/usr/bin/env python3
-"""Install or inspect the event-driven iTerm title decorator."""
+"""Terminal TLDR: agent-written titles and a small native-name fallback."""
+from __future__ import annotations
+
 import argparse
 import json
 import os
 from pathlib import Path
-import plistlib
-import socket
-import subprocess
+import runpy
 import sys
-import tempfile
+import uuid
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(getattr(sys, '_MEIPASS', Path(__file__).resolve().parents[1]))
 sys.path.insert(0, str(ROOT / 'lib'))
 import titles
-
-LABEL = 'com.jacobbartlett.terminal-tldr-iterm'
-
-
-def install():
-    python = titles.APP_DIR / 'venv/bin/python'
-    if not python.exists():
-        subprocess.run([sys.executable, '-m', 'venv', str(python.parent.parent)], check=True)
-        subprocess.run([str(python), '-m', 'pip', 'install', 'iterm2'], check=True)
-    auto = Path.home() / 'Library/Application Support/iTerm2/Scripts/AutoLaunch'
-    for name in ('terminal_tldr_iterm.py', 'terminal_tldr_iterm.py.disabled'):
-        source = auto / name
-        if source.exists() or source.is_symlink():
-            archive = titles.APP_DIR / 'retired-autolaunch'
-            archive.mkdir(parents=True, exist_ok=True)
-            source.rename(Path(tempfile.mkdtemp(dir=archive)) / name)
-    plist_path = Path.home() / 'Library/LaunchAgents' / f'{LABEL}.plist'
-    plist_path.parent.mkdir(parents=True, exist_ok=True)
-    plist_path.write_bytes(plistlib.dumps({
-        'Label': LABEL,
-        'ProgramArguments': [str(python), str(ROOT / 'iterm2/terminal_tldr_iterm.py')],
-        'RunAtLoad': True, 'KeepAlive': {'SuccessfulExit': False}, 'ThrottleInterval': 10,
-        'EnvironmentVariables': {'PATH': '/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin',
-                                 'TERMINAL_TLDR_MODEL': titles.MODEL, 'TERMINAL_TLDR_REASONING': titles.REASONING},
-        'StandardOutPath': str(titles.APP_DIR / 'service.log'),
-        'StandardErrorPath': str(titles.APP_DIR / 'service.log'),
-        'WorkingDirectory': str(ROOT), 'Nice': 10,
-    }))
-    domain = f'gui/{os.getuid()}'
-    subprocess.run(['launchctl', 'bootout', domain, str(plist_path)], capture_output=True)
-    subprocess.run(['launchctl', 'enable', f'{domain}/{LABEL}'], check=True)
-    subprocess.run(['launchctl', 'bootstrap', domain, str(plist_path)], check=True)
-    print(f'Started {LABEL}; no terminal restart required.')
+import agent_titles
+import setup
 
 
-def status():
-    with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as client:
-        client.settimeout(2)
-        try:
-            client.connect(str(titles.APP_DIR / 'status.sock'))
-            print(json.dumps(json.loads(client.recv(8192)), indent=2))
-        except (OSError, ValueError):
-            print('Title updater is not connected.', file=sys.stderr)
-            return 1
-    return 0
+def agent_hook():
+    """Fail open, never leak a hook error into the user's conversation."""
+    try:
+        raw = sys.stdin.buffer.read(1024 * 1024 + 1)
+        if len(raw) > 1024 * 1024:
+            return
+        data = json.loads(raw)
+        if data.get('agent_id') or data.get('source') == 'fork':
+            return
+        sid = agent_titles.terminal_id()
+        thread = data.get('session_id', '')
+        if not thread or (not sid and not os.environ.get('CODEX_THREAD_ID')):
+            return
+        env_thread = os.environ.get('CODEX_THREAD_ID')
+        if env_thread and env_thread != thread:
+            return
+        event = data.get('hook_event_name')
+        if event not in ('SessionStart', 'UserPromptSubmit'):
+            return
+        result = agent_titles.request(dict(
+            action='prompt' if event == 'UserPromptSubmit' else 'context',
+            terminal=sid, thread=thread, turn=data.get('turn_id') or str(uuid.uuid4()),
+            provider='codex' if env_thread else 'claude'))
+        if result.get('ok') and (event == 'SessionStart' or result.get('due')):
+            text = agent_titles.context(thread, setup.launcher(),
+                                        result.get('title', ''), result.get('due', False))
+            print(json.dumps({'hookSpecificOutput': {
+                'hookEventName': event, 'additionalContext': text}}))
+    except (OSError, ValueError, TypeError, AttributeError):
+        pass
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('action', choices=['install', 'status', 'hook'])
-    parser.add_argument('legacy_hook_args', nargs='*', help=argparse.SUPPRESS)
+    sub = parser.add_subparsers(dest='action', required=True)
+    for name in ('status', 'doctor', 'pause', 'resume', 'uninstall', 'serve', 'agent-hook', 'refresh'):
+        sub.add_parser(name)
+    install = sub.add_parser('install')
+    install.add_argument('--no-agents', action='store_true')
+    configure = sub.add_parser('configure')
+    configure.add_argument('--model', required=True, choices=titles.MODELS)
+    configure.add_argument('--reasoning', required=True, choices=titles.EFFORTS)
+    legacy = sub.add_parser('hook', help=argparse.SUPPRESS)
+    legacy.add_argument('args', nargs='*')
+    for name in ('set', 'review'):
+        cmd = sub.add_parser(name)
+        cmd.add_argument('--session', required=True)
+        if name == 'set':
+            cmd.add_argument('--title', required=True)
+            cmd.add_argument('--emojis', nargs=3, required=True)
     args = parser.parse_args()
-    if args.action == 'install':
-        install()
-    elif args.action == 'status':
-        return status()
-    # Old hook invocations are deliberately silent no-ops during migration.
-    return 0
+    if args.action == 'agent-hook':
+        agent_hook()
+        return 0
+    if args.action == 'hook':
+        return 0
+    if args.action == 'serve':
+        runpy.run_path(str(ROOT / 'iterm2/terminal_tldr_iterm.py'), run_name='__main__')
+        return 0
+    try:
+        if args.action in ('set', 'review'):
+            sid = agent_titles.terminal_id()
+            if not sid and not os.environ.get('CODEX_THREAD_ID'):
+                raise ValueError('Run this command inside the owning iTerm agent session.')
+            if os.environ.get('CODEX_THREAD_ID', args.session) != args.session:
+                raise ValueError('A child agent cannot rename its parent terminal.')
+            payload = dict(action=args.action, terminal=sid, thread=args.session,
+                           provider='codex' if os.environ.get('CODEX_THREAD_ID') else 'claude')
+            if args.action == 'set':
+                payload['value'] = dict(title=args.title, emojis=args.emojis)
+            result = agent_titles.request(payload)
+        elif args.action == 'status':
+            result = setup.service_status() or dict(ok=False, error='Title updater is not connected.')
+        elif args.action == 'doctor':
+            result = setup.doctor()
+        elif args.action == 'configure':
+            result = titles.configure(args.model, args.reasoning)
+        elif args.action == 'refresh':
+            result = agent_titles.request(dict(action='refresh'))
+        elif args.action == 'install':
+            result = setup.install(ROOT, with_agents=not args.no_agents)
+        elif args.action == 'uninstall':
+            result = setup.uninstall()
+        else:
+            getattr(setup, args.action)()
+            result = dict(ok=True)
+        print(json.dumps(result, indent=2, ensure_ascii=False))
+        return 0 if result.get('ok', True) else 1
+    except Exception as error:
+        print(json.dumps(dict(ok=False, error=str(error))), file=sys.stderr)
+        return 1
 
 
 if __name__ == '__main__':

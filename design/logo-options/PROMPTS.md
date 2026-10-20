@@ -41,3 +41,10 @@ Use case: logo-brand. Create one polished original macOS app icon concept for Te
 ## 10 Window Wink
 
 Use case: logo-brand. Create one polished original macOS app icon concept for Terminal TLDR, a small utility that gives terminal windows short meaningful titles. Concept 10: Window Wink. A small warm-orange rounded terminal window with one cream title bar and a subtle single friendly winking eye implied by a short black curved stroke. Playful but sophisticated, no command prompt. Flat vector-like editorial brand mark, rich warm orange/amber/charcoal/cream, superb optical balance and legibility at 32 pixels. One centered icon, generous padding, subtle rounded-square cream backdrop, square image. No text, lettering, numbers, watermarks, gradients, gloss, photorealism or fake screenshot. Absolutely no OpenAI knot, Codex logo, generic >_ command prompt, purple app icon, or resemblance to existing AI brands. Render a single distinctive proposed icon, not a grid.
+
+## Selected mark: remove padding
+
+Edited option 01 with the built-in image generation tool. The transparent result
+is saved in `macos/AppIcon.png`; the original option remains unchanged.
+
+Use case: background-extraction. Edit target: the attached approved Terminal TLDR Tab Bookmark logo. Remove ALL cream/white background, rounded-square cream tile, and its cast shadow. Keep ONLY the charcoal terminal window, its red/yellow/green lights and the folded golden-orange bookmark draped over its upper right. Preserve their exact geometry, proportions, rich colors, subtle dimensional shading, position relative to one another and clean edges. No redesign, no prompt symbol, no text, no additional objects or outlines. Enlarge and tightly frame the isolated terminal-and-bookmark mark on a genuinely transparent square canvas: the terminal nearly fills the width, leaving only 2 percent padding on left and right. Center the whole mark vertically. This is a production transparent logo asset, not a mockup. Transparent pixels wherever the original cream background/tile used to be.

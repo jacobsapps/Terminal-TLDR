@@ -198,6 +198,7 @@ or `~/.terminal-tldr/performance/`. Never publish a real desktop or conversation
 ## Logo exploration
 
 **Tab Bookmark** (option 01) is the selected app icon. Its source artwork is
-`macos/AppIcon.png`; the Dock and main window use the same bundled icon, with a
-matching bookmark symbol in the menu bar. The original ten directions and
-generation prompts are preserved in `design/logo-options/`.
+`macos/AppIcon.png`, a tightly framed transparent mark. The Dock adds a cream
+tile with minimal side padding; the main window uses the mark without a tile.
+A matching bookmark symbol appears in the menu bar. The original ten directions
+and generation prompts are preserved in `design/logo-options/`.

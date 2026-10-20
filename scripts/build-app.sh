@@ -29,6 +29,7 @@ BIN="$(swift build -c release --show-bin-path)/TerminalTLDR"
 cp "$BIN" "$APP/Contents/MacOS/TerminalTLDR"
 swift -module-cache-path "$BUILD/module-cache" macos/Icon.swift "$BUILD/AppIcon.iconset"
 iconutil -c icns "$BUILD/AppIcon.iconset" -o "$APP/Contents/Resources/AppIcon.icns"
+cp macos/AppIcon.png "$APP/Contents/Resources/BrandMark.png"
 "$BUILD/packaging/bin/python" scripts/bundle-licenses.py "$APP/Contents/Resources/Licenses"
 cp macos/THIRD-PARTY-NOTICES.md "$APP/Contents/Resources/THIRD-PARTY-NOTICES.md"
 # Ad-hoc for local builds. Release signing and notarization are separate steps.

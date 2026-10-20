@@ -210,12 +210,19 @@ struct ContentView: View {
     @ObservedObject var model: AppModel
     @State private var confirmRemoval = false
     private let accent = Color(red: 0.73, green: 0.36, blue: 0.06)
+    private static let brandMark: NSImage = {
+        guard let url = Bundle.main.url(forResource: "BrandMark", withExtension: "png"),
+              let image = NSImage(contentsOf: url) else {
+            return NSApplication.shared.applicationIconImage
+        }
+        return image
+    }()
 
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
             HStack(spacing: 12) {
-                Image(nsImage: NSApplication.shared.applicationIconImage)
-                    .resizable().frame(width: 48, height: 48)
+                Image(nsImage: Self.brandMark)
+                    .resizable().scaledToFit().frame(width: 48, height: 48)
                 VStack(alignment: .leading, spacing: 3) {
                     Text("Terminal TLDR").font(.system(size: 23, weight: .semibold, design: .rounded))
                     Text("Less tab hunting.").font(.system(size: 12)).foregroundStyle(.secondary)

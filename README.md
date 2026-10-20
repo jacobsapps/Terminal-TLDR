@@ -197,7 +197,7 @@ or `~/.terminal-tldr/performance/`. Never publish a real desktop or conversation
 
 ## Logo exploration
 
-Ten proposed icon directions are in `design/logo-options/`, with the generation
-prompts in `PROMPTS.md`. These are unselected concepts, not installed app assets.
-The main window uses the same bundled icon as the Dock; the selected replacement
-will be applied consistently after review.
+**Tab Bookmark** (option 01) is the selected app icon. Its source artwork is
+`macos/AppIcon.png`; the Dock and main window use the same bundled icon, with a
+matching bookmark symbol in the menu bar. The original ten directions and
+generation prompts are preserved in `design/logo-options/`.

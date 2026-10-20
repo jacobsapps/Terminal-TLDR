@@ -209,7 +209,7 @@ final class AppModel: ObservableObject {
 struct ContentView: View {
     @ObservedObject var model: AppModel
     @State private var confirmRemoval = false
-    private let accent = Color(red: 0.48, green: 0.36, blue: 0.9)
+    private let accent = Color(red: 0.73, green: 0.36, blue: 0.06)
 
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
@@ -364,7 +364,7 @@ struct TerminalTLDRApp: App {
                 Button("Refresh status") { Task { await model.refresh() } }.keyboardShortcut("r")
             }
         }
-        MenuBarExtra("Terminal TLDR", systemImage: "terminal") {
+        MenuBarExtra("Terminal TLDR", systemImage: "bookmark.fill") {
             MenuContent(model: model)
         }
     }

@@ -1,6 +1,6 @@
 # Terminal TLDR logo exploration
 
-Ten original concepts made with the built-in image generator. None is installed yet.
+Ten original concepts made with the built-in image generator. Option 01, Tab Bookmark, was selected for the app icon.
 
 ## 01 Tab Bookmark
 
